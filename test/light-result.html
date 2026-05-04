@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결과 — 황금귀 챌린지</title>
+
+  <!-- Tailwind v4 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="../css/style.css" />
+
+  <style>
+    /* 결과 카드 애니메이션 */
+    @keyframes revealGrade {
+      0%   { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+      60%  { transform: scale(1.08) rotate(1deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .grade-reveal {
+      animation: revealGrade 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.3s;
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .count-up {
+      animation: countUp 0.5s var(--ease) both;
+      animation-delay: 0.8s;
+    }
+
+    /* 공유 카드 영역 */
+    .share-card {
+      background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .share-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, var(--gold-glow-strong), transparent 70%);
+      pointer-events: none;
+    }
+
+    /* 퍼센트 링 */
+    .percentile-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: relative;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header class="header scrolled">
+    <a href="../index.html" class="logo">🦻 황금귀</a>
+    <a href="pro.html" class="btn btn--outline btn--sm">전문가 모드 도전</a>
+  </header>
+
+  <main style="padding-top:80px; padding-bottom:80px;">
+    <div class="container">
+
+      <!-- 결과 없을 때 -->
+      <div id="noResult" style="display:none; text-align:center; padding:80px 0;">
+        <p class="heading-2" style="margin-bottom:16px;">결과가 없어요</p>
+        <p class="body" style="color:var(--text-muted); margin-bottom:32px;">테스트를 먼저 진행해주세요.</p>
+        <a href="light.html" class="btn btn--primary">테스트 시작하기</a>
+      </div>
+
+      <!-- 결과 영역 -->
+      <div id="resultArea" style="display:none;">
+
+        <!-- 등급 카드 -->
+        <div class="share-card grade-reveal" id="gradeCard" style="margin-bottom:24px;">
+          <p class="caption" style="letter-spacing:0.1em; text-transform:uppercase; margin-bottom:20px; opacity:0.6;">
+            🦻 황금귀 챌린지 결과
+          </p>
+
+          <div style="font-size:5rem; margin-bottom:12px;" id="resultEmoji">🐬</div>
+
+          <div id="gradeBadgeWrap" style="margin-bottom:12px; display:flex; justify-content:center;">
+            <span class="grade-badge" id="gradeBadge">GOLD</span>
+          </div>
+
+          <p class="heading-1" style="margin-bottom:4px;" id="resultAnimalName">돌고래 귀</p>
+          <p class="body" style="color:var(--text-muted);" id="resultDesc">인간의 한계를 초월했어요</p>
+        </div>
+
+        <!-- 수치 카드 -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;" class="count-up">
+
+          <div class="card" style="text-align:center;">
+            <p class="caption" style="margin-bottom:8px;">청력 나이</p>
+            <p class="heading-1 gold-text" id="resultAge">—</p>
+            <p class="caption">세</p>
+          </div>
+
+          <div class="card" style="text-align:center;">
+            <p class="caption" style="margin-bottom:8px;">상위</p>
+            <p class="heading-1 gold-text" id="resultPercentile">—</p>
+            <p class="caption">%</p>
+          </div>
+
+        </div>
+
+        <!-- 가청 한계 -->
+        <div class="card" style="margin-bottom:24px; display:flex; align-items:center; justify-content:space-between;" id="limitCard">
+          <div>
+            <p class="caption" style="margin-bottom:4px;">가청 한계 주파수</p>
+            <p class="heading-2 gold-text" id="resultHz">— kHz</p>
+          </div>
+          <div style="text-align:right;">
+            <p class="caption" style="margin-bottom:4px;">인간 평균</p>
+            <p class="body" style="color:var(--text-muted);">약 14kHz</p>
+          </div>
+        </div>
+
+        <!-- 전문가 모드 유도 -->
+        <div style="background:linear-gradient(135deg, rgba(240,192,64,0.08), rgba(185,242,255,0.05)); border:1px solid var(--border-hover); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px;">
+          <p class="heading-2" style="margin-bottom:8px;">🎧 진짜 실력이 궁금하다면?</p>
+          <p class="body" style="color:var(--text-muted); margin-bottom:20px;">
+            라이트 모드는 참고용이에요. 전문가 모드에서<br />
+            <strong style="color:var(--text);">변별력 점수와 음악가 등급</strong>을 확인해보세요.
+          </p>
+          <a href="pro.html" class="btn btn--primary btn--full">
+            🎵 전문가 모드 도전하기
+          </a>
+        </div>
+
+        <!-- 공유 버튼 -->
+        <div style="margin-bottom:24px;">
+          <p class="caption" style="text-align:center; margin-bottom:12px;">결과 공유하기</p>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn--outline btn--full" onclick="shareKakao()">
+              💬 카카오톡
+            </button>
+            <button class="btn btn--outline btn--full" onclick="copyLink()">
+              🔗 링크 복사
+            </button>
+          </div>
+        </div>
+
+        <!-- 다시 테스트 -->
+        <div style="text-align:center;">
+          <a href="light.html" class="btn btn--ghost btn--sm">↩ 다시 테스트하기</a>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 면책 -->
+  <div style="padding:0 20px 40px;">
+    <div class="container">
+      <p class="disclaimer">
+        이 결과는 기기 특성과 환경에 따라 차이가 있을 수 있는 참고용 수치입니다.<br />
+        정확한 청력 검사는 전문 청각 센터를 방문해 주세요.
+      </p>
+    </div>
+  </div>
+
+  <script src="../js/audio.js"></script>
+  <script>
+    // 결과 로드
+    const raw = sessionStorage.getItem('goldear_light_result')
+
+    if (!raw) {
+      document.getElementById('noResult').style.display = 'block'
+    } else {
+      document.getElementById('resultArea').style.display = 'block'
+
+      const result = JSON.parse(raw)
+      const { limitHz } = result
+
+      const ageData    = HearingAge.getAge(limitHz)
+      const gradeData  = HearingAge.getAnimalGrade(limitHz)
+      const percentile = HearingAge.getPercentile(limitHz)
+
+      // 렌더링
+      document.getElementById('resultEmoji').textContent    = gradeData.emoji
+      document.getElementById('resultAnimalName').textContent = `${gradeData.name} 귀`
+      document.getElementById('resultDesc').textContent      = gradeData.desc
+      document.getElementById('resultAge').textContent       = ageData.age
+      document.getElementById('resultPercentile').textContent = percentile
+      document.getElementById('resultHz').textContent        = `${(limitHz / 1000).toFixed(0)}kHz`
+
+      // 뱃지
+      const badge = document.getElementById('gradeBadge')
+      badge.textContent = gradeData.label
+      badge.className = `grade-badge grade-badge--${gradeData.grade}`
+    }
+
+    // 링크 복사
+    function copyLink() {
+      const url = window.location.origin + '/test/light.html'
+      navigator.clipboard.writeText(url).then(() => {
+        alert('링크가 복사됐어요! 친구에게 공유해보세요 🦻')
+      }).catch(() => {
+        // fallback
+        const el = document.createElement('textarea')
+        el.value = url
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
+        alert('링크가 복사됐어요!')
+      })
+    }
+
+    // 카카오톡 공유 (카카오 SDK 없이 URL scheme)
+    function shareKakao() {
+      const result = JSON.parse(sessionStorage.getItem('goldear_light_result') || '{}')
+      const limitHz = result.limitHz || 0
+      const gradeData = HearingAge.getAnimalGrade(limitHz)
+      const ageData = HearingAge.getAge(limitHz)
+      const percentile = HearingAge.getPercentile(limitHz)
+
+      const text = `나의 청력 나이는 ${ageData.age}세! ${gradeData.emoji} ${gradeData.name} 귀 등급 획득 (상위 ${percentile}%)\n황금귀 챌린지에서 내 귀 실력 확인해봐!\n${window.location.origin}`
+
+      // 모바일: 카카오 URL scheme / 데스크탑: 클립보드 복사
+      if (/Android|iPhone/i.test(navigator.userAgent)) {
+        window.location.href = `kakaolink://send?text=${encodeURIComponent(text)}`
+        setTimeout(() => {
+          navigator.clipboard.writeText(text)
+          alert('카카오톡을 열 수 없어요. 텍스트가 복사됐으니 직접 붙여넣기 해주세요!')
+        }, 1500)
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('공유 텍스트가 복사됐어요! 카카오톡에 붙여넣기 해주세요 💬')
+        })
+      }
+    }
+  </script>
+
+</body>
+</html>

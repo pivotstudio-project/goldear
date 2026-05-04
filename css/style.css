@@ -1,0 +1,508 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+/* ============================================
+   GOLDEAR — 황금귀 챌린지
+   Design Tokens
+   ============================================ */
+
+:root {
+  /* 브랜드 컬러 */
+  --gold:           #F0C040;
+  --gold-bright:    #FFD966;
+  --gold-dim:       #A07820;
+  --gold-glow:      rgba(240, 192, 64, 0.15);
+  --gold-glow-strong: rgba(240, 192, 64, 0.35);
+
+  /* 배경 */
+  --bg:             #080808;
+  --bg-surface:     #111111;
+  --bg-elevated:    #1A1A1A;
+  --bg-overlay:     rgba(8, 8, 8, 0.85);
+
+  /* 텍스트 */
+  --text:           #F0EDE6;
+  --text-muted:     #888880;
+  --text-faint:     #444440;
+
+  /* 등급 컬러 */
+  --grade-bronze:   #CD7F32;
+  --grade-silver:   #C0C0C0;
+  --grade-gold:     #F0C040;
+  --grade-platinum: #E5E4E2;
+  --grade-diamond:  #B9F2FF;
+  --grade-master:   #FF6FD8;
+
+  /* 시스템 */
+  --border:         rgba(240, 192, 64, 0.12);
+  --border-hover:   rgba(240, 192, 64, 0.35);
+  --radius-sm:      6px;
+  --radius:         12px;
+  --radius-lg:      20px;
+  --radius-full:    9999px;
+
+  /* 타이포그래피 */
+  --font-base:      'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+
+  /* 트랜지션 */
+  --ease:           cubic-bezier(0.16, 1, 0.3, 1);
+  --duration:       300ms;
+}
+
+/* ============================================
+   리셋 & 베이스
+   ============================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-base);
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-base);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ============================================
+   공통 레이아웃
+   ============================================ */
+
+.container {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.container--wide {
+  max-width: 960px;
+}
+
+.section {
+  padding: 80px 0;
+}
+
+/* ============================================
+   타이포그래피
+   ============================================ */
+
+.display {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.heading-1 {
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.heading-2 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.body-lg {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.body {
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.caption {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.gold-text {
+  color: var(--gold);
+}
+
+/* ============================================
+   버튼
+   ============================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: all var(--duration) var(--ease);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: var(--gold);
+  color: #080808;
+  box-shadow: 0 0 0 0 var(--gold-glow-strong);
+}
+
+.btn--primary:hover {
+  background: var(--gold-bright);
+  box-shadow: 0 0 32px 0 var(--gold-glow-strong);
+  transform: translateY(-1px);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-hover);
+}
+
+.btn--outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-glow);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.btn--ghost:hover {
+  color: var(--text);
+}
+
+.btn--lg {
+  padding: 18px 40px;
+  font-size: 1.125rem;
+}
+
+.btn--sm {
+  padding: 10px 20px;
+  font-size: 0.875rem;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+/* ============================================
+   카드
+   ============================================ */
+
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  transition: border-color var(--duration) var(--ease);
+}
+
+.card:hover {
+  border-color: var(--border-hover);
+}
+
+.card--glow {
+  box-shadow: 0 0 40px var(--gold-glow);
+  border-color: var(--border-hover);
+}
+
+/* ============================================
+   등급 뱃지
+   ============================================ */
+
+.grade-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.grade-badge--bronze   { background: rgba(205,127,50,0.15); color: var(--grade-bronze); border: 1px solid rgba(205,127,50,0.3); }
+.grade-badge--silver   { background: rgba(192,192,192,0.1); color: var(--grade-silver); border: 1px solid rgba(192,192,192,0.25); }
+.grade-badge--gold     { background: rgba(240,192,64,0.15); color: var(--grade-gold);   border: 1px solid rgba(240,192,64,0.35); }
+.grade-badge--platinum { background: rgba(229,228,226,0.1); color: var(--grade-platinum); border: 1px solid rgba(229,228,226,0.25); }
+.grade-badge--diamond  { background: rgba(185,242,255,0.1); color: var(--grade-diamond); border: 1px solid rgba(185,242,255,0.3); }
+.grade-badge--master   { background: rgba(255,111,216,0.1); color: var(--grade-master);  border: 1px solid rgba(255,111,216,0.3); }
+
+/* ============================================
+   프로그레스 바
+   ============================================ */
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: var(--radius-full);
+  transition: width 0.4s var(--ease);
+  box-shadow: 0 0 8px var(--gold-glow-strong);
+}
+
+/* ============================================
+   스텝 인디케이터
+   ============================================ */
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  transition: all var(--duration) var(--ease);
+}
+
+.step-dot.active {
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow-strong);
+  width: 24px;
+  border-radius: var(--radius-full);
+}
+
+.step-dot.done {
+  background: var(--gold-dim);
+}
+
+/* ============================================
+   입력 필드
+   ============================================ */
+
+.input {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--text);
+  font-family: var(--font-base);
+  font-size: 1rem;
+  transition: border-color var(--duration) var(--ease);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+
+.input::placeholder {
+  color: var(--text-faint);
+}
+
+/* ============================================
+   체크박스
+   ============================================ */
+
+.checkbox-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.checkbox-wrap input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--gold);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* ============================================
+   구분선
+   ============================================ */
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ============================================
+   애니메이션
+   ============================================ */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow-strong); }
+  50%       { box-shadow: 0 0 24px 4px var(--gold-glow-strong); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes soundWave {
+  0%, 100% { transform: scaleY(0.3); }
+  50%       { transform: scaleY(1); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s var(--ease) both;
+}
+
+.animate-fade-up-delay-1 { animation-delay: 0.1s; }
+.animate-fade-up-delay-2 { animation-delay: 0.2s; }
+.animate-fade-up-delay-3 { animation-delay: 0.3s; }
+.animate-fade-up-delay-4 { animation-delay: 0.4s; }
+
+.animate-pulse-gold {
+  animation: pulse-gold 2s ease-in-out infinite;
+}
+
+/* ============================================
+   사운드 웨이브 비주얼
+   ============================================ */
+
+.sound-wave {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+}
+
+.sound-wave__bar {
+  width: 4px;
+  border-radius: var(--radius-full);
+  background: var(--gold);
+  transform-origin: bottom;
+}
+
+.sound-wave__bar:nth-child(1) { animation: soundWave 0.8s ease-in-out infinite 0.0s; height: 60%; }
+.sound-wave__bar:nth-child(2) { animation: soundWave 0.8s ease-in-out infinite 0.1s; height: 100%; }
+.sound-wave__bar:nth-child(3) { animation: soundWave 0.8s ease-in-out infinite 0.2s; height: 70%; }
+.sound-wave__bar:nth-child(4) { animation: soundWave 0.8s ease-in-out infinite 0.1s; height: 90%; }
+.sound-wave__bar:nth-child(5) { animation: soundWave 0.8s ease-in-out infinite 0.0s; height: 50%; }
+
+.sound-wave--paused .sound-wave__bar {
+  animation-play-state: paused;
+  transform: scaleY(0.3);
+}
+
+/* ============================================
+   헤더
+   ============================================ */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--duration) var(--ease);
+}
+
+.header.scrolled {
+  border-bottom-color: var(--border);
+  background: var(--bg-overlay);
+}
+
+.logo {
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--gold);
+}
+
+/* ============================================
+   면책 조항
+   ============================================ */
+
+.disclaimer {
+  font-size: 0.75rem;
+  color: var(--text-faint);
+  line-height: 1.6;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* ============================================
+   반응형
+   ============================================ */
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .btn--lg {
+    padding: 16px 28px;
+    font-size: 1rem;
+  }
+}
