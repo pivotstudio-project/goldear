@@ -211,11 +211,24 @@ class GoldEar {
   }
 
   // ----------------------------------------
-  // 볼륨 캘리브레이션용 — 기준음 재생
-  // 유저가 "편안하게 들린다" 확인하는 용도
+  // 볼륨 캘리브레이션용 — 도레미파솔 멜로디
   // ----------------------------------------
-  playCalibration() {
-    this.playTone(1000) // 1kHz 기준음
+  async playCalibration() {
+    if (!this.ctx) return
+
+    const notes = [
+      { freq: 261.63, dur: 300 },  // 도 (C4)
+      { freq: 293.66, dur: 300 },  // 레 (D4)
+      { freq: 329.63, dur: 300 },  // 미 (E4)
+      { freq: 349.23, dur: 300 },  // 파 (F4)
+      { freq: 392.00, dur: 500 },  // 솔 (G4)
+    ]
+
+    for (const note of notes) {
+      if (this.sweepAborted) break
+      this.playTone(note.freq, note.dur, 30)
+      await this._wait(note.dur + 60)
+    }
   }
 
   stopCalibration() {

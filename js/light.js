@@ -42,23 +42,32 @@ async function toggleCalib() {
   const wave = document.getElementById('calibWave')
 
   if (calibPlaying) {
-    audio.stop()
     calibPlaying = false
+    audio.sweepAborted = true
+    audio.stop()
     wave.classList.add('sound-wave--paused')
     btn.textContent = '🔊 소리 들어보기'
     return
   }
 
-  // AudioContext는 탭 이벤트 핸들러 내에서 바로 생성해야 iOS 정책 통과
   const CtxClass = window.AudioContext || window.webkitAudioContext
   if (!audio.ctx) audio.ctx = new CtxClass()
   await audio.init()
 
-  audio.setVolume(volumeSlider.value / 100)
-  audio.playCalibration()
   calibPlaying = true
+  audio.sweepAborted = false
   wave.classList.remove('sound-wave--paused')
   btn.textContent = '⏹ 소리 끄기'
+
+  // 도레미파솔 반복 재생
+  audio.setVolume(volumeSlider.value / 100)
+  const loop = async () => {
+    while (calibPlaying) {
+      await audio.playCalibration()
+      await audio._wait(600) // 반복 사이 텀
+    }
+  }
+  loop()
 }
 
 // ----------------------------------------
