@@ -25,18 +25,26 @@ class GoldEar {
   // iOS/Android 자동재생 정책 대응
   // ----------------------------------------
   async init() {
-    if (this.ctx) return true
-
     try {
       const CtxClass = window.AudioContext || window.webkitAudioContext
       if (!CtxClass) {
         console.error('Web Audio API를 지원하지 않는 브라우저입니다.')
         return false
       }
-      this.ctx = new CtxClass()
 
-      // iOS에서 suspended 상태로 시작하는 경우 resume
-      if (this.ctx.state === 'suspended') {
+      // 없으면 생성
+      if (!this.ctx) {
+        this.ctx = new CtxClass()
+      }
+
+      // suspended면 무조건 resume (iOS 핵심)
+      if (this.ctx.state !== 'running') {
+        await this.ctx.resume()
+      }
+
+      // resume 후에도 안되면 재생성
+      if (this.ctx.state !== 'running') {
+        this.ctx = new CtxClass()
         await this.ctx.resume()
       }
 

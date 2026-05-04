@@ -38,7 +38,7 @@ volumeSlider.addEventListener('input', () => {
 // 소리 들어보기 토글
 // ----------------------------------------
 async function toggleCalib() {
-  const btn = document.getElementById('btnPlay')
+  const btn  = document.getElementById('btnPlay')
   const wave = document.getElementById('calibWave')
 
   if (calibPlaying) {
@@ -49,11 +49,10 @@ async function toggleCalib() {
     return
   }
 
-  const ok = await audio.init()
-  if (!ok) {
-    alert('오디오를 지원하지 않는 브라우저예요. Chrome 또는 Safari를 사용해 주세요.')
-    return
-  }
+  // AudioContext는 탭 이벤트 핸들러 내에서 바로 생성해야 iOS 정책 통과
+  const CtxClass = window.AudioContext || window.webkitAudioContext
+  if (!audio.ctx) audio.ctx = new CtxClass()
+  await audio.init()
 
   audio.setVolume(volumeSlider.value / 100)
   audio.playCalibration()
@@ -66,11 +65,10 @@ async function toggleCalib() {
 // 테스트 시작 — 스윕 화면으로 전환만
 // ----------------------------------------
 async function goToSweep() {
-  const ok = await audio.init()
-  if (!ok) {
-    alert('오디오를 지원하지 않는 브라우저예요. Chrome 또는 Safari를 사용해 주세요.')
-    return
-  }
+  // iOS 정책: 탭 이벤트 내에서 즉시 AudioContext 생성
+  const CtxClass = window.AudioContext || window.webkitAudioContext
+  if (!audio.ctx) audio.ctx = new CtxClass()
+  await audio.init()
 
   audio.stop()
   calibPlaying = false
