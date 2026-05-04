@@ -156,6 +156,14 @@
         💡 스피커·이어폰 모두 가능 / 조용한 환경 권장
       </p>
 
+      <!-- 모바일 무음 모드 안내 -->
+      <div id="iosMuteNotice" style="display:none; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius); padding:14px 16px; margin-bottom:16px;">
+        <p class="caption" style="color:#F59E0B; line-height:1.6;">
+          📳 <strong>iPhone 사용자</strong> — 옆면 무음 스위치를 꺼주세요.<br />
+          무음 모드에서는 소리가 나오지 않아요.
+        </p>
+      </div>
+
       <div style="display:flex; flex-direction:column; gap:10px;">
         <button class="btn btn--outline btn--full" id="btnPlay" onclick="toggleCalib()">
           🔊 소리 들어보기
@@ -225,5 +233,11 @@
 
 <script src="../js/audio.js"></script>
 <script src="../js/light.js"></script>
+<script>
+  // iOS면 무음 모드 안내 표시
+  if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    document.getElementById('iosMuteNotice').style.display = 'block'
+  }
+</script>
 </body>
 </html>
