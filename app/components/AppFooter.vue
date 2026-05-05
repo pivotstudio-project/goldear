@@ -11,6 +11,7 @@
             Pivot Studio
           </a></span>
       </p>
+      <NuxtLink to="/privacy" style="color:var(--text-faint); text-decoration:underline;">개인정보처리방침</NuxtLink>
     </div>
   </footer>
 </template>

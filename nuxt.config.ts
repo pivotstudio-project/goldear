@@ -1,6 +1,16 @@
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-01',
   devtools: { enabled: true },
+
+  runtimeConfig: {
+    databaseUrl: process.env.DATABASE_URL,
+  },
+
+  vite: {
+    plugins: [tailwindcss()]
+  },
 
   modules: [
     '@nuxtjs/sitemap',
@@ -37,7 +47,11 @@ export default defineNuxtConfig({
         { property: 'og:title', content: '황금귀 챌린지 — 당신의 귀는 몇 살?' },
         { property: 'og:description', content: '게임처럼 즐기는 청각 인지력 테스트. 30초 만에 청력 나이 확인.' },
         { property: 'og:url', content: 'https://goldear.kr' },
+        { property: 'og:image', content: 'https://goldear.kr/og.jpg' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
         { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:image', content: 'https://goldear.kr/og.jpg' },
 
         { name: 'google-site-verification', content: 'GG4KYbd-KynG_jFLMPU1xtLaFjxTpJmzES_VF_uzU9k' },
         { name: 'naver-site-verification', content: 'e728bb75585a171c4a0abc98b218c8d8b6e32f4a' },
