@@ -12,6 +12,11 @@ interface AnimalGrade {
   grade: string
   label: string
   desc: string
+  image: string
+  headline: string
+  sub: string
+  share: string
+  tags: string[]
 }
 
 interface MusicianGradeResult {
@@ -247,13 +252,103 @@ export const HearingAge = {
   },
 
   getAnimalGrade(limitHz: number): AnimalGrade {
-    if (limitHz >= 19000) return { emoji: '🐬', name: '돌고래', grade: 'master',   label: '황금귀',  desc: '인간의 한계를 초월했어요' }
-    if (limitHz >= 17000) return { emoji: '🦇', name: '박쥐',   grade: 'diamond',  label: 'DIAMOND', desc: '초음파 근접. 상위 1%' }
-    if (limitHz >= 15000) return { emoji: '🦅', name: '독수리', grade: 'platinum', label: 'PLATINUM',desc: '예민하고 날카로운 귀' }
-    if (limitHz >= 13000) return { emoji: '🦊', name: '여우',   grade: 'gold',     label: 'GOLD',    desc: '숲속의 청음가' }
-    if (limitHz >= 11000) return { emoji: '🐱', name: '고양이', grade: 'silver',   label: 'SILVER',  desc: '예민한 편이에요' }
-    if (limitHz >= 9000)  return { emoji: '🐄', name: '소',     grade: 'bronze',   label: 'BRONZE',  desc: '평범한 포유류' }
-    return                       { emoji: '🐘', name: '코끼리', grade: 'bronze',   label: 'BRONZE',  desc: '저주파 전문가' }
+    if (limitHz >= 19000) return {
+      emoji: '🐬',
+      name: '돌고래',
+      grade: 'master',
+      label: '황금귀',
+      desc: '바다의 천재, 소리로 세상을 읽는 타입',
+      image: '/animals/dolphin.jpg',
+
+      headline: '소리를 “보는” 인간',
+      sub: '압축 음원 들으면 스트레스 받는 타입',
+      share: '나 이거까지 들림. 너는?',
+      tags: ['#황금귀', '#레퍼런스귀', '#장비욕발동']
+    }
+
+    if (limitHz >= 17000) return {
+      emoji: '🦇',
+      name: '박쥐',
+      grade: 'diamond',
+      label: 'DIAMOND',
+      desc: '어둠 속의 항법사, 남들이 못 듣는 걸 듣는 타입',
+      image: '/animals/bat.jpg',
+
+      headline: '안 들리는 게 없음',
+      sub: '남들은 모르는 노이즈까지 캐치함',
+      share: '이거 들리면 정상 아님 (좋은 의미로)',
+      tags: ['#숨은소리헌터', '#고역집착', '#예민MAX']
+    }
+
+    if (limitHz >= 15000) return {
+      emoji: '🦅',
+      name: '독수리',
+      grade: 'platinum',
+      label: 'PLATINUM',
+      desc: '하늘의 사냥꾼, 디테일을 놓치지 않는 타입',
+      image: '/animals/eagle.jpg',
+
+      headline: '디테일 집착형 귀',
+      sub: '“뭔가 이상한데?”를 정확히 맞추는 타입',
+      share: '믹싱 이상하면 바로 느낌 옴',
+      tags: ['#디테일중독', '#분석형', '#귀믿고간다']
+    }
+
+    if (limitHz >= 13000) return {
+      emoji: '🦊',
+      name: '여우',
+      grade: 'gold',
+      label: 'GOLD',
+      desc: '숲속의 귀족, 영리하고 예민한 타입',
+      image: '/animals/fox.jpg',
+
+      headline: '눈치 100단 귀',
+      sub: '좋고 나쁨은 확실히 구분함',
+      share: '이 정도면 상위권은 맞지?',
+      tags: ['#밸런스형', '#감각좋음', '#은근고수']
+    }
+
+    if (limitHz >= 11000) return {
+      emoji: '🐱',
+      name: '고양이',
+      grade: 'silver',
+      label: 'SILVER',
+      desc: '집사를 지배하는 자, 듣고도 못 들은 척하는 타입',
+      image: '/animals/cat.jpg',
+
+      headline: '선택적 청취자',
+      sub: '듣긴 들리는데 굳이 신경 안 씀',
+      share: '들려도 안 듣는 게 편함',
+      tags: ['#귀차니즘', '#감성우선', '#적당히좋음']
+    }
+
+    if (limitHz >= 9000) return {
+      emoji: '🐄',
+      name: '소',
+      grade: 'bronze',
+      label: 'BRONZE',
+      desc: '초원의 터줏대감, 묵묵히 자기 길을 가는 타입',
+      image: '/animals/cow.jpg',
+
+      headline: '웬만하면 다 OK',
+      sub: '음질? 크게 상관 없는 타입',
+      share: '나쁘지만 않으면 됨',
+      tags: ['#둔감아님편안함', '#막귀아님', '#스트레스없음']
+    }
+
+    return {
+      emoji: '🐘',
+      name: '코끼리',
+      grade: 'bronze',
+      label: 'BRONZE',
+      desc: '대지의 지혜자, 낮은 곳의 진실을 아는 타입',
+      image: '/animals/elephant.jpg',
+
+      headline: '저음 마스터',
+      sub: '베이스 나오면 게임 끝',
+      share: '고음은 모르겠고 이건 좋다',
+      tags: ['#베이스충', '#리듬형', '#몸으로듣는다']
+    }
   },
 
   getPercentile(limitHz: number): number {

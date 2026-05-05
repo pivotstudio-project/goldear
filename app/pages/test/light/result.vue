@@ -1,69 +1,102 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { HearingAge } from '~/utils/audio'
 
-const hasResult = ref(false)
-const limitHz = ref(0)
-const grade = ref<any>({})
-const age = ref<any>({})
-const percentile = ref(0)
+const route = useRoute()
 
-onMounted(() => {
-  // 세션 스토리지에서 결과 로드
-  const raw = sessionStorage.getItem('goldear_light_result')
-  if (raw) {
-    hasResult.value = true
-    const result = JSON.parse(raw)
-    limitHz.value = result.limitHz
+// SSR 안정화 — computed 체인 끊고 즉시 계산
+const hz = Number(route.query.hz || 0)
 
-    // 데이터 가공
-    grade.value = HearingAge.getAnimalGrade(limitHz.value)
-    age.value = HearingAge.getAge(limitHz.value)
-    percentile.value = HearingAge.getPercentile(limitHz.value)
-  }
+const grade = hz > 0
+  ? HearingAge.getAnimalGrade(hz)
+  : (import.meta.client
+    ? (() => {
+      const raw = sessionStorage.getItem('goldear_light_result')
+      return raw ? HearingAge.getAnimalGrade(JSON.parse(raw).limitHz) : null
+    })()
+    : null)
+
+const limitHzVal = hz > 0
+  ? hz
+  : (import.meta.client
+    ? (() => {
+      const raw = sessionStorage.getItem('goldear_light_result')
+      return raw ? JSON.parse(raw).limitHz : 0
+    })()
+    : 0)
+
+const age = limitHzVal > 0 ? HearingAge.getAge(limitHzVal) : null
+const percentile = limitHzVal > 0 ? HearingAge.getPercentile(limitHzVal) : 0
+
+const hasResult = !!grade && limitHzVal > 0
+
+const ogImageUrl = grade
+  ? `https://goldear.kr/og?${new URLSearchParams({
+    grade: grade.grade,
+    name: grade.name,
+    age: String(age?.age ?? 0),
+    percentile: String(percentile),
+    desc: grade.desc,
+    image: grade.image,
+  }).toString()}`
+  : 'https://goldear.kr/og.jpg'
+
+// SSR OG — 즉시 값으로 박기
+useHead({
+  title: grade ? `나의 청력 나이는 ${age?.age}세! — 황금귀 챌린지` : '황금귀 챌린지',
 })
 
-// 링크 복사 기능
+useSeoMeta({
+  ogTitle: grade ? `나의 청력 나이는 ${age?.age}세! ${grade.emoji}` : '황금귀 챌린지',
+  ogDescription: grade ? `${grade.headline} — ${grade.desc} | goldear.kr` : '게임처럼 즐기는 청각 인지력 테스트',
+  ogImage: ogImageUrl,
+  ogUrl: `https://goldear.kr/test/light/result?hz=${limitHzVal}`,
+  twitterCard: 'summary_large_image',
+  twitterImage: ogImageUrl,
+})
+
+const resultUrl = `https://goldear.kr/test/light/result?hz=${limitHzVal}`
+
+// 조건부 CTA 메시지
+const ctaMessage = percentile <= 5
+  ? '이 결과, 진짜인지 확인해봐야 합니다.'
+  : percentile <= 20
+    ? '상위권입니다. 더 정확히 측정해보세요.'
+    : '생각보다 어렵죠? 제대로 테스트해보세요.'
+
+// 카카오 description — 숫자 + 비교
+const kakaoDescription = `상위 ${percentile}% 청력 👀\n${grade?.share ?? ''}\n친구랑 비교해보세요`
+
 const copyLink = () => {
-  const url = window.location.origin + '/test/light'
-  navigator.clipboard.writeText(url).then(() => {
-    alert('링크가 복사됐어요! 친구에게 공유해보세요 🦻')
+  navigator.clipboard.writeText(resultUrl).then(() => {
+    alert('결과 링크가 복사됐어요! 친구에게 공유해보세요 🦻')
   })
 }
 
-// 카카오톡 공유 기능
 const shareKakao = () => {
   if (!window.Kakao) {
     alert('카카오톡 SDK를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.')
     return
   }
-
-  // 초기화 (최초 1회)
   if (!window.Kakao.isInitialized()) {
-    // ---------------------------------------------------------
-    // ⚠️ 아래에 발급받은 '자바스크립트 키'를 넣으세요!
-    // ---------------------------------------------------------
     window.Kakao.init('0e38b601f174f1e29ea7c63fe7a942a6')
   }
-
-  // 피드 메시지 전송
   window.Kakao.Share.sendDefault({
     objectType: 'feed',
     content: {
-      title: `나의 청력 나이는 ${age.value.age}세!`,
-      description: `${grade.value.emoji} ${grade.value.name} 귀 등급 획득 (상위 ${percentile.value}%)\n황금귀 챌린지에서 내 귀 실력 확인해봐!`,
-      imageUrl: 'https://goldear.kr/og-image.png', // 실제 서버에 올린 썸네일 경로
+      title: `나의 청력 나이는 ${age?.age}세! ${grade?.emoji}`,
+      description: kakaoDescription,
+      imageUrl: ogImageUrl,
       link: {
-        mobileWebUrl: window.location.origin,
-        webUrl: window.location.origin,
+        mobileWebUrl: resultUrl,
+        webUrl: resultUrl,
       },
     },
     buttons: [
       {
         title: '내 청력 나이 확인하기',
         link: {
-          mobileWebUrl: window.location.origin,
-          webUrl: window.location.origin,
+          mobileWebUrl: resultUrl,
+          webUrl: resultUrl,
         },
       },
     ],
@@ -77,7 +110,7 @@ const shareKakao = () => {
       <NuxtLink to="/test/pro" class="btn btn--outline btn--sm">전문가 모드 도전</NuxtLink>
     </AppHeader>
 
-    <main style="padding-top:20px; padding-bottom:80px;">
+    <main style="padding-bottom:80px;">
       <div class="container">
 
         <div v-if="!hasResult" style="text-align:center; padding:80px 0;">
@@ -88,23 +121,31 @@ const shareKakao = () => {
 
         <div v-else>
 
-          <div class="share-card grade-reveal" style="margin-bottom:24px;">
-            <p class="caption" style="letter-spacing:0.1em; text-transform:uppercase; margin-bottom:20px; opacity:0.6;">
-              🦻 황금귀 챌린지 결과
-            </p>
-            <div style="font-size:5rem; margin-bottom:12px;">{{ grade.emoji }}</div>
-            <div style="margin-bottom:12px; display:flex; justify-content:center;">
-              <span class="grade-badge" :class="`grade-badge--${grade.grade}`">{{ grade.label }}</span>
+          <!-- 1. 이미지 + 헤드라인 -->
+          <div class="result-card grade-reveal" style="margin-bottom:24px;">
+            <div class="animal-image-wrap">
+              <img :src="grade!.image" :alt="grade!.name" class="animal-image" />
+              <div class="animal-image-overlay" />
+              <div class="animal-image-text">
+                <p class="caption" style="opacity:0.6; margin-bottom:8px; letter-spacing:0.1em; text-transform:uppercase;">🦻 황금귀 챌린지</p>
+                <p class="heading-1" style="margin-bottom:6px;">{{ grade!.name }} 귀</p>
+                <p style="font-size:1.25rem; font-weight:600; color:var(--gold); margin-bottom:8px;">{{ grade!.headline }}</p>
+                <p class="body" style="color:var(--text-muted);">{{ grade!.sub }}</p>
+              </div>
             </div>
-            <p class="heading-1" style="margin-bottom:4px;">{{ grade.name }} 귀</p>
-            <p class="body" style="color:var(--text-muted);">{{ grade.desc }}</p>
           </div>
 
-          <div style="margin-bottom:40px;" class="count-up">
-            <p class="caption" style="text-align:center; margin-bottom:12px;">결과 공유하기</p>
-            <div style="display:flex; gap:10px;">
-              <button class="btn btn--outline btn--full" @click="shareKakao" style="border-color: #FEE500; color: #391B1B; background-color: #FEE500;">
-                💬 카카오톡
+          <!-- 2. 공유 -->
+          <div class="card count-up" style="margin-bottom:24px;">
+            <p class="caption" style="text-align:center; margin-bottom:4px; color:var(--text-muted);">친구한테 보내보세요</p>
+            <p class="body" style="text-align:center; margin-bottom:16px; font-weight:600;">{{ grade!.share }}</p>
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+              <button
+                class="btn btn--full"
+                @click="shareKakao"
+                style="border:1px solid #FEE500; color:#391B1B; background-color:#FEE500; border-radius:var(--radius-full); font-weight:600;"
+              >
+                💬 카톡 공유
               </button>
               <button class="btn btn--outline btn--full" @click="copyLink">
                 🔗 링크 복사
@@ -112,40 +153,37 @@ const shareKakao = () => {
             </div>
           </div>
 
-          <div class="count-up" style="animation-delay: 1s;">
-            <p class="heading-2" style="margin-bottom:16px;">상세 분석</p>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-              <div class="card" style="text-align:center;">
-                <p class="caption" style="margin-bottom:8px;">청력 나이</p>
-                <p class="heading-1 gold-text">{{ age.age }}</p>
-                <p class="caption">세</p>
+          <!-- 3. 상세 분석 -->
+          <div class="card" style="margin-bottom:24px;">
+            <p class="heading-2" style="margin-bottom:20px;">상세 분석</p>
+            <div style="display:flex; margin-bottom:20px;">
+              <div style="flex:1; text-align:center; padding:16px 0;">
+                <p class="caption" style="margin-bottom:6px;">청력 나이</p>
+                <p class="heading-1 gold-text">{{ age!.age }}<span class="caption">세</span></p>
               </div>
-
-              <div class="card" style="text-align:center;">
-                <p class="caption" style="margin-bottom:8px;">상위</p>
-                <p class="heading-1 gold-text">{{ percentile }}</p>
-                <p class="caption">%</p>
+              <div style="width:1px; background:var(--border);"></div>
+              <div style="flex:1; text-align:center; padding:16px 0;">
+                <p class="caption" style="margin-bottom:6px;">상위</p>
+                <p class="heading-1 gold-text">{{ percentile }}<span class="caption">%</span></p>
               </div>
             </div>
-
-            <div class="card" style="margin-bottom:32px; display:flex; align-items:center; justify-content:space-between;">
-              <div>
-                <p class="caption" style="margin-bottom:4px;">가청 한계 주파수</p>
-                <p class="heading-2 gold-text">{{ limitHz.toLocaleString() }} Hz</p>
-              </div>
-              <div style="text-align:right;">
-                <p class="caption" style="margin-bottom:4px;">인간 평균</p>
-                <p class="body" style="color:var(--text-muted);">약 14,000Hz</p>
-              </div>
+            <div style="background:var(--bg-elevated); border-radius:var(--radius); padding:14px 16px;">
+              <p class="caption" style="line-height:1.7;">
+                인간 평균 가청 한계는 약 <strong style="color:var(--text);">14,000Hz</strong>예요.
+                당신의 가청 한계는 <strong style="color:var(--gold);">{{ limitHzVal.toLocaleString() }}Hz</strong>로
+                {{ limitHzVal >= 14000 ? '평균보다 뛰어나요.' : '평균보다 낮은 편이에요.' }}
+              </p>
             </div>
           </div>
 
+          <!-- 4. 전문가 모드 CTA -->
           <div style="background:linear-gradient(135deg, rgba(240,192,64,0.08), rgba(185,242,255,0.05)); border:1px solid var(--border-hover); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px;">
-            <p class="heading-2" style="margin-bottom:8px;">🎧 진짜 실력이 궁금하다면?</p>
-            <p class="body" style="color:var(--text-muted); margin-bottom:20px;">
-              라이트 모드는 참고용이에요. 전문가 모드에서<br />
-              <strong style="color:var(--text);">변별력 점수와 음악가 등급</strong>을 확인해보세요.
+            <p class="heading-2" style="margin-bottom:8px;">🎧 이건 워밍업이에요</p>
+            <p class="body" style="color:var(--text-muted); margin-bottom:8px;">
+              {{ ctaMessage }}
+            </p>
+            <p class="caption" style="color:var(--text-muted); margin-bottom:20px;">
+              상위 5%만 통과하는 변별력 테스트 — 진짜 실력은 여기서 갈립니다.
             </p>
             <NuxtLink to="/test/pro" class="btn btn--primary btn--full">
               🎵 전문가 모드 도전하기
@@ -157,14 +195,12 @@ const shareKakao = () => {
           </div>
 
         </div>
-
       </div>
     </main>
   </div>
 </template>
 
 <style scoped>
-/* 결과 카드 등장 애니메이션 */
 @keyframes revealGrade {
   0%   { transform: scale(0.7) rotate(-5deg); opacity: 0; }
   60%  { transform: scale(1.08) rotate(1deg); }
@@ -175,7 +211,6 @@ const shareKakao = () => {
   animation-delay: 0.3s;
 }
 
-/* 수치 카운트업 느낌 애니메이션 */
 @keyframes countUp {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -185,23 +220,37 @@ const shareKakao = () => {
   animation-delay: 0.8s;
 }
 
-/* 공유 카드 배경 스타일 */
-.share-card {
-  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
+.result-card {
   border: 1px solid var(--border-hover);
   border-radius: var(--radius-lg);
-  padding: 32px 24px;
-  text-align: center;
-  position: relative;
   overflow: hidden;
 }
 
-.share-card::before {
-  content: '';
+.animal-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+}
+
+.animal-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.animal-image-overlay {
   position: absolute;
-  top: -40px; right: -40px;
-  width: 160px; height: 160px;
-  background: radial-gradient(circle, var(--gold-glow-strong), transparent 70%);
-  pointer-events:none;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(8,8,8,0.1) 0%, rgba(8,8,8,0.85) 70%, rgba(8,8,8,1) 100%);
+}
+
+.animal-image-text {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
 }
 </style>
