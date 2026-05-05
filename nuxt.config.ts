@@ -49,7 +49,8 @@ export default defineNuxtConfig({
         {
           src: '/_vercel/insights/script.js',
           defer: true
-        }
+        },
+        { src: 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js', defer: true }
       ]
     },
   }

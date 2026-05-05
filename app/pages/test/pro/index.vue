@@ -4,7 +4,7 @@
       <NuxtLink to="/test/light" class="btn btn--outline btn--sm">라이트 테스트 하기</NuxtLink>
     </AppHeader>
 
-    <main style="min-height:100dvh; padding-top:72px;">
+    <main style="min-height:100dvh;">
       <div class="container" style="padding-top:60px; padding-bottom:80px;">
         <div style="text-align:center; margin-bottom:56px;">
           <div class="floating" style="font-size:5rem; margin-bottom:24px;">🎧</div>
