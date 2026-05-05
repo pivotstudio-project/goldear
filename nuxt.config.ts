@@ -1,0 +1,56 @@
+export default defineNuxtConfig({
+  compatibilityDate: '2025-05-01',
+  devtools: { enabled: true },
+
+  modules: [
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
+  ],
+
+  css: ['~/assets/css/style.css'],
+
+  // Sitemap
+  sitemap: {
+    sitemaps: true,
+    urls: [
+      { loc: '/', priority: 1.0, changefreq: 'weekly' },
+      { loc: '/test/light', priority: 0.9, changefreq: 'monthly' },
+      { loc: '/test/pro', priority: 0.8, changefreq: 'monthly' },
+    ]
+  },
+
+  // Robots
+  robots: {
+    disallow: [],
+    allow: '/',
+  },
+
+  app: {
+    head: {
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      title: '황금귀 챌린지 — 당신의 귀는 몇 살인가요?',
+      meta: [
+        { name: 'description', content: '게임처럼 즐기는 청각 인지력 테스트. 30초 만에 당신의 청력 나이를 확인하세요.' },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: '황금귀 챌린지' },
+        { property: 'og:title', content: '황금귀 챌린지 — 당신의 귀는 몇 살?' },
+        { property: 'og:description', content: '게임처럼 즐기는 청각 인지력 테스트. 30초 만에 청력 나이 확인.' },
+        { property: 'og:url', content: 'https://goldear.kr' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+      ],
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css'
+        }
+      ],
+      script: [
+        {
+          src: '/_vercel/insights/script.js',
+          defer: true
+        }
+      ]
+    },
+  }
+})
