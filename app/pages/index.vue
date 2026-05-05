@@ -3,7 +3,7 @@
     <AppHeader />
 
     <!-- 히어로 -->
-    <section style="min-height:100dvh; display:flex; align-items:center; padding-top:80px; position:relative; overflow:hidden;">
+    <section style="min-height:100dvh; display:flex; align-items:center; position:relative; overflow:hidden;">
 
       <!-- 배경 글로우 -->
       <div style="

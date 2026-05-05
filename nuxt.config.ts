@@ -38,6 +38,9 @@ export default defineNuxtConfig({
         { property: 'og:description', content: '게임처럼 즐기는 청각 인지력 테스트. 30초 만에 청력 나이 확인.' },
         { property: 'og:url', content: 'https://goldear.kr' },
         { name: 'twitter:card', content: 'summary_large_image' },
+
+        { name: 'google-site-verification', content: 'GG4KYbd-KynG_jFLMPU1xtLaFjxTpJmzES_VF_uzU9k' },
+        { name: 'naver-site-verification', content: 'e728bb75585a171c4a0abc98b218c8d8b6e32f4a' },
       ],
       link: [
         {

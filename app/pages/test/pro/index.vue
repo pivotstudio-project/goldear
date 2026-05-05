@@ -5,7 +5,7 @@
     </AppHeader>
 
     <main style="min-height:100dvh;">
-      <div class="container" style="padding-top:60px; padding-bottom:80px;">
+      <div class="container" style="padding-bottom:80px;">
         <div style="text-align:center; margin-bottom:56px;">
           <div class="floating" style="font-size:5rem; margin-bottom:24px;">🎧</div>
           <div style="display:inline-flex; align-items:center; gap:8px; background:var(--bg-elevated); border:1px solid var(--border-hover); border-radius:var(--radius-full); padding:6px 16px; margin-bottom:20px;">

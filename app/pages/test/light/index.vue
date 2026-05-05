@@ -7,7 +7,7 @@
       </div>
     </AppHeader>
 
-    <main style="min-height:100dvh; padding-top:72px; display:flex; align-items:center;">
+    <main style="min-height:100dvh; display:flex; align-items:center;">
       <div class="container" style="padding-top:32px; padding-bottom:80px; width:100%;">
 
         <div v-if="step === 0" class="animate-fade-up" style="display: flex; flex-direction: column;">
