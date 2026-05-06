@@ -55,6 +55,7 @@ export default defineNuxtConfig({
 
         { name: 'google-site-verification', content: 'GG4KYbd-KynG_jFLMPU1xtLaFjxTpJmzES_VF_uzU9k' },
         { name: 'naver-site-verification', content: 'e728bb75585a171c4a0abc98b218c8d8b6e32f4a' },
+        { name: 'google-adsense-account', content: 'ca-pub-1100356834220708' },
       ],
       link: [
         {
