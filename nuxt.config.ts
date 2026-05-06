@@ -68,7 +68,17 @@ export default defineNuxtConfig({
           src: '/_vercel/insights/script.js',
           defer: true
         },
-        { src: 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js', defer: true }
+        { src: 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js', defer: true },
+        {
+          src: 'https://www.googletagmanager.com/gtag/js?id=G-6TF7NTP6MR',
+          async: true
+        },
+        {
+          innerHTML: `window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-6TF7NTP6MR');`
+        }
       ]
     },
   }
