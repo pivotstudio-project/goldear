@@ -3,7 +3,6 @@ import { HearingAge } from '~/utils/audio'
 
 const route = useRoute()
 
-// SSR 안정화 — computed 체인 끊고 즉시 계산
 const hz = Number(route.query.hz || 0)
 
 const grade = hz > 0
@@ -40,7 +39,6 @@ const ogImageUrl = grade
   }).toString()}`
   : 'https://goldear.kr/og.jpg'
 
-// SSR OG — 즉시 값으로 박기
 useHead({
   title: grade ? `나의 청력 나이는 ${age?.age}세! — 황금귀 챌린지` : '황금귀 챌린지',
 })
@@ -56,14 +54,12 @@ useSeoMeta({
 
 const resultUrl = `https://goldear.kr/test/light/result?hz=${limitHzVal}`
 
-// 조건부 CTA 메시지
 const ctaMessage = percentile <= 5
   ? '이 결과, 진짜인지 확인해봐야 합니다.'
   : percentile <= 20
     ? '상위권입니다. 더 정확히 측정해보세요.'
     : '생각보다 어렵죠? 제대로 테스트해보세요.'
 
-// 카카오 description — 숫자 + 비교
 const kakaoDescription = `상위 ${percentile}% 청력 👀\n${grade?.share ?? ''}\n친구랑 비교해보세요`
 
 const copyLink = () => {
@@ -103,13 +99,16 @@ const shareKakao = () => {
   })
 }
 
+const isIOS = import.meta.client ? /iPhone|iPad|iPod/i.test(navigator.userAgent) : false
+const storyImageUrl = ref('')
+const showStoryModal = ref(false)
+
 const generateStoryImage = async () => {
   const canvas = document.createElement('canvas')
   canvas.width = 1080
   canvas.height = 1920
   const ctx = canvas.getContext('2d')!
 
-  // 1. 동물 이미지 로드
   const img = new Image()
   img.crossOrigin = 'anonymous'
   await new Promise<void>((resolve, reject) => {
@@ -118,61 +117,60 @@ const generateStoryImage = async () => {
     img.src = grade!.image
   })
 
-  // 2. 배경 이미지 (상단 70% 채움)
-  ctx.drawImage(img, 0, 0, 1080, 1920)
-
-  // 3. 하단 그라디언트 오버레이
-  const gradient = ctx.createLinearGradient(0, 800, 0, 1920)
-  gradient.addColorStop(0, 'rgba(8, 8, 8, 0)')
-  gradient.addColorStop(0.4, 'rgba(8, 8, 8, 0.85)')
-  gradient.addColorStop(1, 'rgba(8, 8, 8, 1)')
-  ctx.fillStyle = gradient
+  ctx.fillStyle = '#080808'
   ctx.fillRect(0, 0, 1080, 1920)
 
-  // 4. 상단 브랜드
-  ctx.fillStyle = 'rgba(240, 192, 64, 0.9)'
-  ctx.font = '600 36px sans-serif'
-  ctx.textAlign = 'center'
-  ctx.fillText('🦻 황금귀 챌린지', 540, 80)
+  const imgHeight = Math.round(1080 * 9 / 16) // 607px
+  ctx.drawImage(img, 0, 0, 1080, imgHeight)
 
-  // 5. 등급 이모지 (크게)
-  ctx.font = '180px sans-serif'
-  ctx.textAlign = 'center'
-  ctx.fillText(grade!.emoji, 540, 1200)
+  const gradient = ctx.createLinearGradient(0, imgHeight - 120, 0, imgHeight + 40)
+  gradient.addColorStop(0, 'rgba(8, 8, 8, 0)')
+  gradient.addColorStop(1, 'rgba(8, 8, 8, 1)')
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, imgHeight - 120, 1080, 160)
 
-  // 6. 등급명
+  ctx.fillStyle = 'rgba(240, 192, 64, 0.6)'
+  ctx.font = '500 32px sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('🦻 황금귀 챌린지', 540, imgHeight + 80)
+
+  ctx.font = '160px sans-serif'
+  ctx.fillText(grade!.emoji, 540, imgHeight + 280)
+
   ctx.fillStyle = '#F0C040'
-  ctx.font = 'bold 96px sans-serif'
-  ctx.fillText(`${grade!.name} 귀`, 540, 1340)
+  ctx.font = 'bold 88px sans-serif'
+  ctx.fillText(`${grade!.name} 귀`, 540, imgHeight + 420)
 
-  // 7. 헤드라인
   ctx.fillStyle = '#F0EDE6'
-  ctx.font = '600 52px sans-serif'
-  ctx.fillText(grade!.headline, 540, 1430)
+  ctx.font = '600 48px sans-serif'
+  ctx.fillText(grade!.headline, 540, imgHeight + 520)
 
-  // 8. 청력 나이 + 상위 %
-  ctx.fillStyle = 'rgba(240, 237, 230, 0.6)'
-  ctx.font = '400 44px sans-serif'
-  ctx.fillText(`청력 나이 ${age!.age}세  ·  상위 ${percentile}%`, 540, 1530)
+  ctx.fillStyle = 'rgba(240, 237, 230, 0.5)'
+  ctx.font = '400 40px sans-serif'
+  ctx.fillText(`청력 나이 ${age!.age}세  ·  상위 ${percentile}%`, 540, imgHeight + 620)
 
-  // 9. 구분선
-  ctx.strokeStyle = 'rgba(240, 192, 64, 0.4)'
+  ctx.strokeStyle = 'rgba(240, 192, 64, 0.3)'
   ctx.lineWidth = 2
   ctx.beginPath()
-  ctx.moveTo(240, 1610)
-  ctx.lineTo(840, 1610)
+  ctx.moveTo(240, imgHeight + 720)
+  ctx.lineTo(840, imgHeight + 720)
   ctx.stroke()
 
-  // 10. CTA
   ctx.fillStyle = 'rgba(240, 192, 64, 0.8)'
-  ctx.font = '500 38px sans-serif'
-  ctx.fillText('너는 몇 등급? → goldear.kr', 540, 1690)
+  ctx.font = '500 36px sans-serif'
+  ctx.fillText('네 귀는 몇 살? → goldear.kr', 540, imgHeight + 810)
 
-  // 11. 다운로드
-  const link = document.createElement('a')
-  link.download = `goldear-${grade!.grade}-result.png`
-  link.href = canvas.toDataURL('image/png')
-  link.click()
+  const dataUrl = canvas.toDataURL('image/png')
+
+  if (isIOS) {
+    storyImageUrl.value = dataUrl
+    showStoryModal.value = true
+  } else {
+    const link = document.createElement('a')
+    link.download = `goldear-${grade!.grade}-result.png`
+    link.href = dataUrl
+    link.click()
+  }
 }
 </script>
 
@@ -182,10 +180,10 @@ const generateStoryImage = async () => {
       <NuxtLink to="/test/pro" class="btn btn--outline btn--sm">전문가 모드 도전</NuxtLink>
     </AppHeader>
 
-    <main style="padding-bottom:80px;">
+    <main>
       <div class="container">
 
-        <div v-if="!hasResult" style="text-align:center; padding:80px 0;">
+        <div v-if="!hasResult" style="text-align:center; padding:40px 0;">
           <p class="heading-2" style="margin-bottom:16px;">결과가 없어요</p>
           <p class="body" style="color:var(--text-muted); margin-bottom:32px;">테스트를 먼저 진행해주세요.</p>
           <NuxtLink to="/test/light" class="btn btn--primary">테스트 시작하기</NuxtLink>
@@ -209,8 +207,6 @@ const generateStoryImage = async () => {
 
           <!-- 2. 공유 -->
           <div class="card count-up" style="margin-bottom:24px;">
-            <p class="caption" style="text-align:center; margin-bottom:4px; color:var(--text-muted);">친구한테 보내보세요</p>
-            <p class="body" style="text-align:center; margin-bottom:16px; font-weight:600;">{{ grade!.share }}</p>
             <div style="display:flex; gap:10px; margin-bottom:16px;">
               <button
                 class="btn btn--full"
@@ -231,8 +227,8 @@ const generateStoryImage = async () => {
             >
               📸 인스타 스토리용 저장
             </button>
-            <p class="caption" style="text-align:center; margin-top:8px; color:var(--text-faint);">
-              저장 후 스토리에 올리고 링크 스티커 붙여보세요
+            <p class="caption" style="text-align:center; margin-top:8px; color:var(--text-white);">
+              {{ isIOS ? '이미지를 길게 눌러서 바로 스토리에 공유해보세요 ✨' : '이미지 저장 후 스토리에 공유해보세요 ✨' }}
             </p>
           </div>
 
@@ -251,9 +247,9 @@ const generateStoryImage = async () => {
               </div>
             </div>
             <div style="background:var(--bg-elevated); border-radius:var(--radius); padding:14px 16px;">
-              <p class="caption" style="line-height:1.7;">
-                인간 평균 가청 한계는 약 <strong style="color:var(--text);">14,000Hz</strong>예요.
-                당신의 가청 한계는 <strong style="color:var(--gold);">{{ limitHzVal.toLocaleString() }}Hz</strong>로
+              <p class="caption break-keep" style="line-height:1.7;">
+                인간 평균 가청 한계는 약 <strong style="color:var(--text);">14,000Hz</strong>예요.<br />
+                당신의 가청 한계는 <strong style="color:var(--gold);">{{ limitHzVal.toLocaleString() }}Hz</strong>로<br />
                 {{ limitHzVal >= 14000 ? '평균보다 뛰어나요.' : '평균보다 낮은 편이에요.' }}
               </p>
             </div>
@@ -266,20 +262,45 @@ const generateStoryImage = async () => {
               {{ ctaMessage }}
             </p>
             <p class="caption" style="color:var(--text-muted); margin-bottom:20px;">
-              상위 5%만 통과하는 변별력 테스트 — 진짜 실력은 여기서 갈립니다.
+              상위 5%만 통과하는 변별력 테스트,<br />진짜 실력은 여기서 갈립니다.
             </p>
             <NuxtLink to="/test/pro" class="btn btn--primary btn--full">
               🎵 전문가 모드 도전하기
             </NuxtLink>
           </div>
 
-          <div style="text-align:center;">
+          <div style="text-align:center; margin-bottom: 20px;">
             <NuxtLink to="/test/light" class="btn btn--ghost btn--sm">↩ 다시 테스트하기</NuxtLink>
           </div>
 
         </div>
       </div>
     </main>
+
+    <!-- iOS 스토리 이미지 모달 -->
+    <Teleport to="body">
+      <div
+        v-if="showStoryModal"
+        style="position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.92); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; gap:20px;"
+        @click.self="showStoryModal = false"
+      >
+        <!-- 상단 우측 닫기 -->
+        <button
+          @click="showStoryModal = false"
+          style="position:absolute; top:20px; right:20px; width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.15); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.25rem; color:#fff;"
+        >
+          ✕
+        </button>
+
+        <p style="color:#F0C040; font-family:sans-serif; font-size:14px; text-align:center; line-height:1.6;">
+          이미지를 <strong>길게 눌러서 저장</strong>한 후<br />인스타 스토리에 올려보세요 📸
+        </p>
+        <img
+          :src="storyImageUrl"
+          style="max-width:100%; max-height:75dvh; border-radius:12px; object-fit:contain;"
+        />
+      </div>
+    </Teleport>
   </div>
 </template>
 

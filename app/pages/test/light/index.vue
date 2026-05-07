@@ -190,7 +190,7 @@ const runSweep = async () => {
   currentFreqText.value = '—'
   isFailed.value = false
 
-  const sweepVol = Math.max(5, volume.value - 15) / 100
+  const sweepVol = volume.value / 100
   audio.setVolume(sweepVol)
 
   await audio.sweep(

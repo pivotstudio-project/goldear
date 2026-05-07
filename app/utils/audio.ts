@@ -93,7 +93,7 @@ export class GoldEar {
     this.gainNode.gain.linearRampToValueAtTime(this.volume, now + fadeSec)
 
     this.oscillator = this.ctx.createOscillator()
-    this.oscillator.type = 'triangle'
+    this.oscillator.type = 'sine'
     this.oscillator.frequency.setValueAtTime(freq, now)
 
     this.oscillator.connect(this.gainNode)
@@ -317,7 +317,7 @@ export const HearingAge = {
       image: '/animals/cat.jpg',
 
       headline: '선택적 청취자',
-      sub: '듣긴 들리는데 굳이 신경 안 씀',
+      sub: '들리긴 들리는데 굳이 신경 안 씀',
       share: '들려도 안 듣는 게 편함',
       tags: ['#귀차니즘', '#감성우선', '#적당히좋음']
     }
