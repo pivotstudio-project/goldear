@@ -102,6 +102,78 @@ const shareKakao = () => {
     ],
   })
 }
+
+const generateStoryImage = async () => {
+  const canvas = document.createElement('canvas')
+  canvas.width = 1080
+  canvas.height = 1920
+  const ctx = canvas.getContext('2d')!
+
+  // 1. 동물 이미지 로드
+  const img = new Image()
+  img.crossOrigin = 'anonymous'
+  await new Promise<void>((resolve, reject) => {
+    img.onload = () => resolve()
+    img.onerror = reject
+    img.src = grade!.image
+  })
+
+  // 2. 배경 이미지 (상단 70% 채움)
+  ctx.drawImage(img, 0, 0, 1080, 1920)
+
+  // 3. 하단 그라디언트 오버레이
+  const gradient = ctx.createLinearGradient(0, 800, 0, 1920)
+  gradient.addColorStop(0, 'rgba(8, 8, 8, 0)')
+  gradient.addColorStop(0.4, 'rgba(8, 8, 8, 0.85)')
+  gradient.addColorStop(1, 'rgba(8, 8, 8, 1)')
+  ctx.fillStyle = gradient
+  ctx.fillRect(0, 0, 1080, 1920)
+
+  // 4. 상단 브랜드
+  ctx.fillStyle = 'rgba(240, 192, 64, 0.9)'
+  ctx.font = '600 36px sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText('🦻 황금귀 챌린지', 540, 80)
+
+  // 5. 등급 이모지 (크게)
+  ctx.font = '180px sans-serif'
+  ctx.textAlign = 'center'
+  ctx.fillText(grade!.emoji, 540, 1200)
+
+  // 6. 등급명
+  ctx.fillStyle = '#F0C040'
+  ctx.font = 'bold 96px sans-serif'
+  ctx.fillText(`${grade!.name} 귀`, 540, 1340)
+
+  // 7. 헤드라인
+  ctx.fillStyle = '#F0EDE6'
+  ctx.font = '600 52px sans-serif'
+  ctx.fillText(grade!.headline, 540, 1430)
+
+  // 8. 청력 나이 + 상위 %
+  ctx.fillStyle = 'rgba(240, 237, 230, 0.6)'
+  ctx.font = '400 44px sans-serif'
+  ctx.fillText(`청력 나이 ${age!.age}세  ·  상위 ${percentile}%`, 540, 1530)
+
+  // 9. 구분선
+  ctx.strokeStyle = 'rgba(240, 192, 64, 0.4)'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.moveTo(240, 1610)
+  ctx.lineTo(840, 1610)
+  ctx.stroke()
+
+  // 10. CTA
+  ctx.fillStyle = 'rgba(240, 192, 64, 0.8)'
+  ctx.font = '500 38px sans-serif'
+  ctx.fillText('너는 몇 등급? → goldear.kr', 540, 1690)
+
+  // 11. 다운로드
+  const link = document.createElement('a')
+  link.download = `goldear-${grade!.grade}-result.png`
+  link.href = canvas.toDataURL('image/png')
+  link.click()
+}
 </script>
 
 <template>
@@ -151,6 +223,17 @@ const shareKakao = () => {
                 🔗 링크 복사
               </button>
             </div>
+
+            <button
+              class="btn btn--outline btn--full"
+              @click="generateStoryImage"
+              style="border-color: rgba(240,192,64,0.4); color: var(--gold);"
+            >
+              📸 인스타 스토리용 저장
+            </button>
+            <p class="caption" style="text-align:center; margin-top:8px; color:var(--text-faint);">
+              저장 후 스토리에 올리고 링크 스티커 붙여보세요
+            </p>
           </div>
 
           <!-- 3. 상세 분석 -->
