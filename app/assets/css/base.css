@@ -1,0 +1,22 @@
+/* ============================================
+   GOLDEAR — 황금귀 챌린지
+   Base (Tailwind preflight 이후 추가 설정)
+   ============================================ */
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+button {
+  font-family: var(--font-sans);
+}

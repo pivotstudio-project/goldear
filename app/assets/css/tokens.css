@@ -1,0 +1,52 @@
+/* ============================================
+   GOLDEAR — 황금귀 챌린지
+   Design Tokens
+   ============================================ */
+
+@theme {
+  /* Primary (브랜드 컬러) */
+  --color-primary:              #F0C040;
+  --color-primary-bright:       #FFD966;
+  --color-primary-dim:          #A07820;
+  --color-primary-glow:         rgba(240, 192, 64, 0.15);
+  --color-primary-glow-strong:  rgba(240, 192, 64, 0.35);
+
+  /* Background */
+  --color-bg:                   #080808;
+  --color-surface:              #111111;
+  --color-elevated:             #1A1A1A;
+  --color-overlay:              rgba(8, 8, 8, 0.85);
+
+  /* Text */
+  --color-text:                 #F0EDE6;
+  --color-muted:                #888880;
+  --color-faint:                #444440;
+
+  /* Border */
+  --color-border:               rgba(240, 192, 64, 0.12);
+  --color-border-hover:         rgba(240, 192, 64, 0.35);
+
+  /* Grade */
+  --color-grade-bronze:         #CD7F32;
+  --color-grade-silver:         #C0C0C0;
+  --color-grade-gold:           #F0C040;
+  --color-grade-platinum:       #E5E4E2;
+  --color-grade-diamond:        #B9F2FF;
+  --color-grade-master:         #FF6FD8;
+
+  /* Font Family */
+  --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+
+  /* Font Size */
+  --text-xs:   0.8125rem;  /* 13px */
+  --text-sm:   0.9rem;     /* 14.4px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg:   1.1rem;     /* 17.6px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  1.75rem;    /* 28px */
+  --text-4xl:  2rem;       /* 32px */
+
+  /* Layout */
+  --header-height: 60px;
+}

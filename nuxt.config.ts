@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     '@nuxtjs/robots',
   ],
 
-  css: ['~/assets/css/style.css'],
+  css: ['~/assets/css/main.css'],
 
   // Sitemap
   sitemap: {

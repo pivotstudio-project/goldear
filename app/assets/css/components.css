@@ -1,0 +1,154 @@
+/* ============================================
+   GOLDEAR — 황금귀 챌린지
+   Components (상태 전환 / 브라우저 오버라이드 필요한 것만)
+   정적 스타일은 Tailwind 유틸리티로 처리
+   ============================================ */
+
+/* ============================================
+   사운드 웨이브
+   ============================================ */
+
+.sound-wave {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+}
+
+.sound-wave__bar {
+  width: 4px;
+  border-radius: 9999px;
+  background: var(--color-primary);
+  transform-origin: bottom;
+}
+
+.sound-wave__bar:nth-child(1) { animation: soundWave 0.8s ease-in-out infinite 0.0s; height: 60%; }
+.sound-wave__bar:nth-child(2) { animation: soundWave 0.8s ease-in-out infinite 0.1s; height: 100%; }
+.sound-wave__bar:nth-child(3) { animation: soundWave 0.8s ease-in-out infinite 0.2s; height: 70%; }
+.sound-wave__bar:nth-child(4) { animation: soundWave 0.8s ease-in-out infinite 0.1s; height: 90%; }
+.sound-wave__bar:nth-child(5) { animation: soundWave 0.8s ease-in-out infinite 0.0s; height: 50%; }
+
+.sound-wave--paused .sound-wave__bar {
+  animation-play-state: paused;
+  transform: scaleY(0.3);
+}
+
+/* ============================================
+   스텝 인디케이터 (active / done 상태 전환)
+   ============================================ */
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-faint);
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.step-dot.active {
+  background: var(--color-primary);
+  box-shadow: 0 0 8px var(--color-primary-glow-strong);
+  width: 24px;
+  border-radius: 9999px;
+}
+
+.step-dot.done {
+  background: var(--color-primary-dim);
+}
+
+/* ============================================
+   볼륨 슬라이더 (브라우저 기본 스타일 오버라이드)
+   ============================================ */
+
+.volume-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-elevated);
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--color-primary-glow-strong);
+  transition: transform 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+/* ============================================
+   정지 버튼 (원형, hover 상태 전환)
+   ============================================ */
+
+.btn-stop {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--color-elevated);
+  border: 2px solid var(--color-border-hover);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+}
+
+.btn-stop:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.08);
+  transform: scale(1.03);
+}
+
+/* ============================================
+   주파수 바 (active / passed / failed 상태 전환)
+   ============================================ */
+
+.freq-bar-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  height: 80px;
+}
+
+.freq-bar {
+  width: 18px;
+  border-radius: 4px 4px 0 0;
+  background: var(--color-elevated);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.freq-bar.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 12px var(--color-primary-glow-strong);
+}
+
+.freq-bar.passed {
+  background: var(--color-primary-dim);
+  border-color: var(--color-primary-dim);
+  opacity: 0.5;
+}
+
+.freq-bar.failed {
+  background: var(--color-elevated);
+  opacity: 0.2;
+}

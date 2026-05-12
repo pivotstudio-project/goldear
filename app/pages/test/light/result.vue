@@ -82,18 +82,12 @@ const shareKakao = () => {
       title: `나의 청력 나이는 ${age?.age}세! ${grade?.emoji}`,
       description: kakaoDescription,
       imageUrl: ogImageUrl,
-      link: {
-        mobileWebUrl: resultUrl,
-        webUrl: resultUrl,
-      },
+      link: { mobileWebUrl: resultUrl, webUrl: resultUrl },
     },
     buttons: [
       {
         title: '내 청력 나이 확인하기',
-        link: {
-          mobileWebUrl: resultUrl,
-          webUrl: resultUrl,
-        },
+        link: { mobileWebUrl: resultUrl, webUrl: resultUrl },
       },
     ],
   })
@@ -120,7 +114,7 @@ const generateStoryImage = async () => {
   ctx.fillStyle = '#080808'
   ctx.fillRect(0, 0, 1080, 1920)
 
-  const imgHeight = Math.round(1080 * 9 / 16) // 607px
+  const imgHeight = Math.round(1080 * 9 / 16)
   ctx.drawImage(img, 0, 0, 1080, imgHeight)
 
   const gradient = ctx.createLinearGradient(0, imgHeight - 120, 0, imgHeight + 40)
@@ -177,100 +171,115 @@ const generateStoryImage = async () => {
 <template>
   <div>
     <AppHeader>
-      <NuxtLink to="/test/pro" class="btn btn--outline btn--sm">전문가 모드 도전</NuxtLink>
+      <NuxtLink to="/test/pro" class="inline-flex items-center justify-center py-2.5 px-5 rounded-full border border-border-hover text-sm font-semibold transition-all duration-300 hover:border-primary hover:text-primary hover:bg-primary-glow">
+        전문가 모드 도전
+      </NuxtLink>
     </AppHeader>
 
     <main>
-      <div class="container">
+      <div class="w-full max-w-lg mx-auto px-5 pb-20">
 
-        <div v-if="!hasResult" style="text-align:center; padding:40px 0;">
-          <p class="heading-2" style="margin-bottom:16px;">결과가 없어요</p>
-          <p class="body" style="color:var(--text-muted); margin-bottom:32px;">테스트를 먼저 진행해주세요.</p>
-          <NuxtLink to="/test/light" class="btn btn--primary">테스트 시작하기</NuxtLink>
+        <!-- 결과 없음 -->
+        <div v-if="!hasResult" class="text-center pt-10">
+          <p class="text-xl font-semibold mb-4">결과가 없어요</p>
+          <p class="text-sm text-muted mb-8">테스트를 먼저 진행해주세요.</p>
+          <NuxtLink
+            to="/test/light"
+            class="inline-flex items-center justify-center py-[18px] px-10 rounded-full bg-primary text-bg text-lg font-semibold tracking-tight transition-all duration-300 hover:bg-primary-bright hover:shadow-[0_0_32px_0_var(--color-primary-glow-strong)] hover:-translate-y-px"
+          >
+            테스트 시작하기
+          </NuxtLink>
         </div>
 
         <div v-else>
 
           <!-- 1. 이미지 + 헤드라인 -->
-          <div class="result-card grade-reveal" style="margin-bottom:24px;">
-            <div class="animal-image-wrap">
-              <img :src="grade!.image" :alt="grade!.name" class="animal-image" />
-              <div class="animal-image-overlay" />
-              <div class="animal-image-text">
-                <p class="caption" style="opacity:0.6; margin-bottom:8px; letter-spacing:0.1em; text-transform:uppercase;">🦻 황금귀 챌린지</p>
-                <p class="heading-1" style="margin-bottom:6px;">{{ grade!.name }} 귀</p>
-                <p style="font-size:1.25rem; font-weight:600; color:var(--gold); margin-bottom:8px;">{{ grade!.headline }}</p>
-                <p class="body" style="color:var(--text-muted);">{{ grade!.sub }}</p>
+          <div class="border border-border-hover rounded-2xl overflow-hidden mb-6 animate-grade-reveal">
+            <div class="relative w-full h-[320px] overflow-hidden">
+              <img :src="grade!.image" :alt="grade!.name" class="w-full h-full object-cover object-center" />
+              <div class="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/85" />
+              <div class="absolute bottom-0 left-0 right-0 p-6">
+                <p class="text-xs text-text/60 mb-2 tracking-widest uppercase">🦻 황금귀 챌린지</p>
+                <p class="text-[clamp(1.75rem,5vw,2.75rem)] font-bold leading-tight tracking-tight mb-1.5">{{ grade!.name }} 귀</p>
+                <p class="text-xl font-semibold text-primary mb-2">{{ grade!.headline }}</p>
+                <p class="text-sm text-muted">{{ grade!.sub }}</p>
               </div>
             </div>
           </div>
 
           <!-- 2. 공유 -->
-          <div class="card count-up" style="margin-bottom:24px;">
-            <div style="display:flex; gap:10px; margin-bottom:16px;">
+          <div class="bg-surface border border-border rounded-2xl p-7 mb-6 animate-count-up">
+            <div class="flex gap-2.5 mb-4">
               <button
-                class="btn btn--full"
+                class="flex-1 py-3.5 rounded-full bg-[#FEE500] text-[#391B1B] font-semibold text-sm transition-all duration-300 hover:brightness-95"
                 @click="shareKakao"
-                style="border:1px solid #FEE500; color:#391B1B; background-color:#FEE500; border-radius:var(--radius-full); font-weight:600;"
               >
                 💬 카톡 공유
               </button>
-              <button class="btn btn--outline btn--full" @click="copyLink">
+              <button
+                class="flex-1 py-3.5 rounded-full border border-border-hover text-text font-semibold text-sm transition-all duration-300 hover:border-primary hover:text-primary hover:bg-primary-glow"
+                @click="copyLink"
+              >
                 🔗 링크 복사
               </button>
             </div>
-
             <button
-              class="btn btn--outline btn--full"
+              class="w-full py-3.5 rounded-full border border-primary/40 text-primary font-semibold text-sm transition-all duration-300 hover:bg-primary-glow"
               @click="generateStoryImage"
-              style="border-color: rgba(240,192,64,0.4); color: var(--gold);"
             >
               📸 인스타 스토리용 저장
             </button>
-            <p class="caption" style="text-align:center; margin-top:8px; color:var(--text-white);">
+            <p class="text-xs text-muted text-center mt-2">
               {{ isIOS ? '이미지를 길게 눌러서 바로 스토리에 공유해보세요 ✨' : '이미지 저장 후 스토리에 공유해보세요 ✨' }}
             </p>
           </div>
 
           <!-- 3. 상세 분석 -->
-          <div class="card" style="margin-bottom:24px;">
-            <p class="heading-2" style="margin-bottom:20px;">상세 분석</p>
-            <div style="display:flex; margin-bottom:20px;">
-              <div style="flex:1; text-align:center; padding:16px 0;">
-                <p class="caption" style="margin-bottom:6px;">청력 나이</p>
-                <p class="heading-1 gold-text">{{ age!.age }}<span class="caption">세</span></p>
+          <div class="bg-surface border border-border rounded-2xl p-7 mb-6">
+            <p class="text-xl font-semibold tracking-tight mb-5">상세 분석</p>
+            <div class="flex mb-5">
+              <div class="flex-1 text-center py-4">
+                <p class="text-sm text-muted mb-1.5">청력 나이</p>
+                <p class="text-[clamp(1.75rem,5vw,2.75rem)] font-bold leading-tight tracking-tight text-primary">
+                  {{ age!.age }}<span class="text-sm text-muted font-normal">세</span>
+                </p>
               </div>
-              <div style="width:1px; background:var(--border);"></div>
-              <div style="flex:1; text-align:center; padding:16px 0;">
-                <p class="caption" style="margin-bottom:6px;">상위</p>
-                <p class="heading-1 gold-text">{{ percentile }}<span class="caption">%</span></p>
+              <div class="w-px bg-border" />
+              <div class="flex-1 text-center py-4">
+                <p class="text-sm text-muted mb-1.5">상위</p>
+                <p class="text-[clamp(1.75rem,5vw,2.75rem)] font-bold leading-tight tracking-tight text-primary">
+                  {{ percentile }}<span class="text-sm text-muted font-normal">%</span>
+                </p>
               </div>
             </div>
-            <div style="background:var(--bg-elevated); border-radius:var(--radius); padding:14px 16px;">
-              <p class="caption break-keep" style="line-height:1.7;">
-                인간 평균 가청 한계는 약 <strong style="color:var(--text);">14,000Hz</strong>예요.<br />
-                당신의 가청 한계는 <strong style="color:var(--gold);">{{ limitHzVal.toLocaleString() }}Hz</strong>로<br />
+            <div class="bg-elevated rounded-xl px-4 py-3.5">
+              <p class="text-sm text-muted leading-relaxed break-keep">
+                인간 평균 가청 한계는 약 <strong class="text-text">14,000Hz</strong>예요.<br />
+                당신의 가청 한계는 <strong class="text-primary">{{ limitHzVal.toLocaleString() }}Hz</strong>로<br />
                 {{ limitHzVal >= 14000 ? '평균보다 뛰어나요.' : '평균보다 낮은 편이에요.' }}
               </p>
             </div>
           </div>
 
           <!-- 4. 전문가 모드 CTA -->
-          <div style="background:linear-gradient(135deg, rgba(240,192,64,0.08), rgba(185,242,255,0.05)); border:1px solid var(--border-hover); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px;">
-            <p class="heading-2" style="margin-bottom:8px;">🎧 이건 워밍업이에요</p>
-            <p class="body" style="color:var(--text-muted); margin-bottom:8px;">
-              {{ ctaMessage }}
-            </p>
-            <p class="caption" style="color:var(--text-muted); margin-bottom:20px;">
+          <div class="bg-gradient-to-br from-primary/8 to-grade-diamond/5 border border-border-hover rounded-2xl p-6 mb-6">
+            <p class="text-xl font-semibold tracking-tight mb-2">🎧 이건 워밍업이에요</p>
+            <p class="text-sm text-muted mb-2">{{ ctaMessage }}</p>
+            <p class="text-xs text-muted mb-5">
               상위 5%만 통과하는 변별력 테스트,<br />진짜 실력은 여기서 갈립니다.
             </p>
-            <NuxtLink to="/test/pro" class="btn btn--primary btn--full">
+            <NuxtLink
+              to="/test/pro"
+              class="w-full inline-flex items-center justify-center py-[18px] px-10 rounded-full bg-primary text-bg text-lg font-semibold tracking-tight transition-all duration-300 hover:bg-primary-bright hover:shadow-[0_0_32px_0_var(--color-primary-glow-strong)] hover:-translate-y-px active:translate-y-0"
+            >
               🎵 전문가 모드 도전하기
             </NuxtLink>
           </div>
 
-          <div style="text-align:center; margin-bottom: 20px;">
-            <NuxtLink to="/test/light" class="btn btn--ghost btn--sm">↩ 다시 테스트하기</NuxtLink>
+          <div class="text-center mb-5">
+            <NuxtLink to="/test/light" class="text-sm text-muted hover:text-text transition-colors duration-300">
+              ↩ 다시 테스트하기
+            </NuxtLink>
           </div>
 
         </div>
@@ -281,80 +290,23 @@ const generateStoryImage = async () => {
     <Teleport to="body">
       <div
         v-if="showStoryModal"
-        style="position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.92); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; gap:20px;"
+        class="fixed inset-0 z-200 bg-black/92 flex flex-col items-center justify-center p-5 gap-5"
         @click.self="showStoryModal = false"
       >
-        <!-- 상단 우측 닫기 -->
         <button
+          class="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/15 flex items-center justify-center text-xl text-white"
           @click="showStoryModal = false"
-          style="position:absolute; top:20px; right:20px; width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.15); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.25rem; color:#fff;"
         >
           ✕
         </button>
-
-        <p style="color:#F0C040; font-family:sans-serif; font-size:14px; text-align:center; line-height:1.6;">
+        <p class="text-sm text-primary text-center leading-relaxed">
           이미지를 <strong>길게 눌러서 저장</strong>한 후<br />인스타 스토리에 올려보세요 📸
         </p>
         <img
           :src="storyImageUrl"
-          style="max-width:100%; max-height:75dvh; border-radius:12px; object-fit:contain;"
+          class="max-w-full max-h-[75dvh] rounded-xl object-contain"
         />
       </div>
     </Teleport>
   </div>
 </template>
-
-<style scoped>
-@keyframes revealGrade {
-  0%   { transform: scale(0.7) rotate(-5deg); opacity: 0; }
-  60%  { transform: scale(1.08) rotate(1deg); }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
-}
-.grade-reveal {
-  animation: revealGrade 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: 0.3s;
-}
-
-@keyframes countUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.count-up {
-  animation: countUp 0.5s var(--ease) both;
-  animation-delay: 0.8s;
-}
-
-.result-card {
-  border: 1px solid var(--border-hover);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.animal-image-wrap {
-  position: relative;
-  width: 100%;
-  height: 320px;
-  overflow: hidden;
-}
-
-.animal-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-.animal-image-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(8,8,8,0.1) 0%, rgba(8,8,8,0.85) 70%, rgba(8,8,8,1) 100%);
-}
-
-.animal-image-text {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 24px;
-}
-</style>
